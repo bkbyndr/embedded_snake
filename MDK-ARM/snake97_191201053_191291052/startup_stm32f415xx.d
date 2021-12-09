@@ -1,0 +1,1 @@
+snake97_191201053_191291052\startup_stm32f415xx.o: startup_stm32f415xx.s

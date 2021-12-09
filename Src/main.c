@@ -19,6 +19,9 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include <stdlib.h>
+#include "Nokia_5110.h"
+#include "dwt_delay.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -32,6 +35,16 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+	#define YUKARI 0
+	#define ASAGI 1
+	#define SOL 2
+	#define SAG 3
+	
+	#define ZOR 3
+	#define ORTA 2
+	#define KOLAY 1
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -44,6 +57,12 @@ RTC_HandleTypeDef hrtc;
 
 /* USER CODE BEGIN PV */
 
+	uint8_t yon = YUKARI;
+	uint8_t fruit_x = 8;
+	uint8_t fruit_y = 3;
+	uint8_t diff = 0;
+	uint8_t diffFlag = 0;
+	
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -51,6 +70,10 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_RTC_Init(void);
 /* USER CODE BEGIN PFP */
+
+void generateScreen(void);
+void generateRandomFruit(void);
+void startMenu(void);
 
 /* USER CODE END PFP */
 
@@ -88,8 +111,8 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_RTC_Init();
-  /* USER CODE BEGIN 2 */
-
+  /* USER CODE BEGIN 2 */	
+	NOKIA_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -99,6 +122,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+		generateScreen();
   }
   /* USER CODE END 3 */
 }
@@ -268,7 +292,79 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
 
+	if(GPIO_Pin == GPIO_PIN_14) // If The INT Source Is EXTI Line9 (A9 Pin)
+    {			
+			yon = YUKARI;
+			if(!diffFlag)
+			{
+				diff = ZOR;
+				diffFlag = 1;
+			}
+    }
+	else if(GPIO_Pin == GPIO_PIN_15) // If The INT Source Is EXTI Line9 (A9 Pin)
+    {			
+			yon = ASAGI;	
+			if(!diffFlag)
+			{
+				diff = KOLAY;
+				diffFlag = 1;
+			}			
+    }
+	else if(GPIO_Pin == GPIO_PIN_6) // If The INT Source Is EXTI Line9 (A9 Pin)
+    {			
+			yon = SAG;			
+    }
+	else if(GPIO_Pin == GPIO_PIN_7) // If The INT Source Is EXTI Line9 (A9 Pin)
+    {			
+			yon = SOL;	
+			if(!diffFlag)
+			{
+				diff = ORTA;
+				diffFlag = 1;
+			}				
+    }
+}
+void generateScreen(void)
+{
+	NOKIA_Out(1,1,"**************");
+	NOKIA_Out(2,1,"*            *");
+	NOKIA_Out(3,1,"*            *");
+	NOKIA_Out(4,1,"*            *");
+	NOKIA_Out(5,1,"*            *");
+	NOKIA_Out(6,1,"**************");
+}
+
+void generateRandomFruit(void)
+{
+	//rand() % (max_number + 1 - minimum_number) + minimum_number
+	fruit_x = rand() % (13 + 1 - 2) + 2;
+	fruit_y = rand() % (5 + 1 - 2) + 2;
+	
+	NOKIA_Out(fruit_y,fruit_x,"+");
+	
+}
+
+void startMenu(void)
+{
+	
+	NOKIA_Out(1,4,"SNAKE'97");
+	NOKIA_Out(2,4,"ABB & EK");
+	HAL_Delay(2000);
+	
+	NOKIA_Clear();
+	
+	NOKIA_Out(1,2,"Zorluk Secin");
+	NOKIA_Out(3,2,"Kolay Asagi");
+	NOKIA_Out(4,2,"Zor  Yukari");
+	NOKIA_Out(5,2,"Orta    Sol");
+	
+	while(!(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_14) || HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_15) || HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_6) || HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_7)));
+	
+	
+}
 /* USER CODE END 4 */
 
 /**
