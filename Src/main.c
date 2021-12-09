@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include "Nokia_5110.h"
 #include "dwt_delay.h"
 
@@ -56,12 +57,21 @@
 RTC_HandleTypeDef hrtc;
 
 /* USER CODE BEGIN PV */
+	struct snake
+	{
+		uint8_t tail;
+		uint8_t x_coor;
+		uint8_t y_coor;
+	};
 
 	uint8_t yon = YUKARI;
 	uint8_t fruit_x = 8;
 	uint8_t fruit_y = 3;
-	uint8_t diff = 0;
+	uint32_t diff = 0;
 	uint8_t diffFlag = 0;
+	uint8_t yilanin_neresi = 1; // Bu degisken yilan dizisinde nerede oldugumuzu gosterecek. Her yem yedigimizde artacak max 49 olacak
+	struct snake snake_array[50] = {0};
+	
 	
 /* USER CODE END PV */
 
@@ -113,6 +123,11 @@ int main(void)
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */	
 	NOKIA_Init();
+	snake_array[0].x_coor = 4;
+	snake_array[0].y_coor = 4;
+	snake_array[0].tail = 1;
+	generateRandomFruit();
+	startMenu();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -122,8 +137,29 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		generateScreen();
+		
+		/*
+		TODO: Her seyin basinda burada oyunun bitip bitmrdigi kontrol edilecek
+		*/
+		
+		
+		if(yon == YUKARI)
+		{
+		
+		}else if(yon == ASAGI)
+		{
+			
+		}else if(yon == SOL)
+		{
+		
+		}else if(yon == SAG)
+		{
+		
+		}
+		
+		HAL_Delay(diff); // TODO: Buraya bir lineer denklem yazilacak
   }
+	
   /* USER CODE END 3 */
 }
 
