@@ -73,6 +73,7 @@ RTC_HandleTypeDef hrtc;
 	uint8_t yilanin_neresi = 1; // Bu degisken yilan dizisinde nerede oldugumuzu gosterecek. Her yem yedigimizde artacak max 49 olacak
 															// Ayni zamanda
 	struct snake snake_array[50] = {0};
+	struct snake snake_temp[50] = {0};
 	
 	
 /* USER CODE END PV */
@@ -87,6 +88,8 @@ void generateScreen(void);
 void generateRandomFruitCoor(void);
 void printRandomFruit(void);	
 void startMenu(void);
+uint8_t selfCollisionControl(void);
+uint8_t boundaryCollisionControl(void);
 
 /* USER CODE END PFP */
 
@@ -153,7 +156,15 @@ int main(void)
 		{
 			for(i = 0; i < yilanin_neresi;i++)
 				{
-					(snake_array[i].y_coor)-=1; 
+					if(i == 0)
+						{
+							(snake_array[0].y_coor)-=1;
+						}
+					else if(i != 0)
+					{
+						snake_array[i].x_coor = snake_array[i - 1].x_coor;
+						snake_array[i].y_coor = snake_array[i - 1].y_coor;
+					}
 					NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");
 				}
 		
@@ -161,22 +172,46 @@ int main(void)
 		{
 			for(i = 0; i < yilanin_neresi;i++)
 				{
-					(snake_array[i].y_coor)+=1;
-					NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");					
+					if(i == 0)
+						{
+							(snake_array[0].y_coor)+=1;
+						}
+					else if(i != 0)
+					{
+						snake_array[i].x_coor = snake_array[i - 1].x_coor;
+						snake_array[i].y_coor = snake_array[i - 1].y_coor;
+					}
+					NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");
 				}
 			
 		}else if(yon == SOL)
 		{
 			for(i = 0; i < yilanin_neresi;i++)
 				{
-					(snake_array[i].x_coor)-=1; 
+					if(i == 0)
+						{
+							(snake_array[0].x_coor)-=1;
+						}
+					else if(i != 0)
+					{
+						snake_array[i].x_coor = snake_array[i - 1].x_coor;
+						snake_array[i].y_coor = snake_array[i - 1].y_coor;
+					}
 					NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");
 				}			
 		}else if(yon == SAG)
 		{
 			for(i = 0; i < yilanin_neresi;i++)
 				{
-					(snake_array[i].x_coor)+=1;
+					if(i == 0)
+						{
+							(snake_array[0].x_coor)+=1;
+						}
+					else if(i != 0)
+					{
+						snake_array[i].x_coor = snake_array[i - 1].x_coor;
+						snake_array[i].y_coor = snake_array[i - 1].y_coor;
+					}
 					NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");
 				}		
 		}
@@ -456,6 +491,29 @@ void generateRandomFruitCoor(void)
 		//rand() % (max_number + 1 - minimum_number) + minimum_number
 	fruit_x = rand() % (13 + 1 - 2) + 2;
 	fruit_y = rand() % (5 + 1 - 2) + 2;
+}
+
+uint8_t selfCollisionControl(void)
+{
+	for(i = 0; i < yilanin_neresi; i++)
+	{
+		if((snake_array[i].x_coor == snake_array[0].x_coor) && (snake_array[i].y_coor == snake_array[0].y_coor))
+		{
+			return 1;
+		}
+
+	}
+			return 0;
+}
+
+
+uint8_t boundaryCollisionControl(void)
+{
+	if((snake_array[0].x_coor == 1) || (snake_array[0].y_coor == 1) || (snake_array[0].x_coor == 14) || (snake_array[0].y_coor == 6))
+	{
+		return 1;
+	}
+	return 0;
 }
 /* USER CODE END 4 */
 
