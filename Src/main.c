@@ -65,11 +65,13 @@ RTC_HandleTypeDef hrtc;
 	};
 
 	uint8_t yon = YUKARI;
+	uint8_t i;
 	uint8_t fruit_x = 8;
 	uint8_t fruit_y = 3;
 	uint32_t diff = 0;
 	uint8_t diffFlag = 0;
 	uint8_t yilanin_neresi = 1; // Bu degisken yilan dizisinde nerede oldugumuzu gosterecek. Her yem yedigimizde artacak max 49 olacak
+															// Ayni zamanda
 	struct snake snake_array[50] = {0};
 	
 	
@@ -82,7 +84,8 @@ static void MX_RTC_Init(void);
 /* USER CODE BEGIN PFP */
 
 void generateScreen(void);
-void generateRandomFruit(void);
+void generateRandomFruitCoor(void);
+void printRandomFruit(void);	
 void startMenu(void);
 
 /* USER CODE END PFP */
@@ -124,10 +127,10 @@ int main(void)
   /* USER CODE BEGIN 2 */	
 	NOKIA_Init();
 	snake_array[0].x_coor = 4;
-	snake_array[0].y_coor = 4;
+	snake_array[0].y_coor = 5;
 	snake_array[0].tail = 1;
-	generateRandomFruit();
 	startMenu();
+	generateRandomFruitCoor();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -137,6 +140,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+		generateScreen();
+		printRandomFruit();
+
 		
 		/*
 		TODO: Her seyin basinda burada oyunun bitip bitmrdigi kontrol edilecek
@@ -145,19 +151,67 @@ int main(void)
 		
 		if(yon == YUKARI)
 		{
+			for(i = 0; i < yilanin_neresi;i++)
+				{
+					(snake_array[i].y_coor)-=1; 
+					NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");
+				}
 		
 		}else if(yon == ASAGI)
 		{
+			for(i = 0; i < yilanin_neresi;i++)
+				{
+					(snake_array[i].y_coor)+=1;
+					NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");					
+				}
 			
 		}else if(yon == SOL)
 		{
-		
+			for(i = 0; i < yilanin_neresi;i++)
+				{
+					(snake_array[i].x_coor)-=1; 
+					NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");
+				}			
 		}else if(yon == SAG)
 		{
-		
+			for(i = 0; i < yilanin_neresi;i++)
+				{
+					(snake_array[i].x_coor)+=1;
+					NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");
+				}		
 		}
 		
-		HAL_Delay(diff); // TODO: Buraya bir lineer denklem yazilacak
+		
+		HAL_Delay(1000 - (300*diff)); 
+		NOKIA_Clear();
+		
+		
+		if( (snake_array[0].x_coor == fruit_x )&& (snake_array[0].y_coor == fruit_y))
+		{
+			if(yon == YUKARI)
+			{
+				snake_array[yilanin_neresi].x_coor = snake_array[yilanin_neresi - 1].x_coor;
+				snake_array[yilanin_neresi].y_coor = snake_array[yilanin_neresi - 1].y_coor + 1;
+			}
+			else if(yon == ASAGI)
+			{
+				snake_array[yilanin_neresi].x_coor = snake_array[yilanin_neresi - 1].x_coor;
+				snake_array[yilanin_neresi].y_coor = snake_array[yilanin_neresi - 1].y_coor - 1;
+			}
+			else if(yon == SOL)
+			{
+				snake_array[yilanin_neresi].y_coor = snake_array[yilanin_neresi - 1].y_coor;
+				snake_array[yilanin_neresi].x_coor = snake_array[yilanin_neresi - 1].x_coor + 1;
+			}
+			else if(yon == SAG)
+			{
+				snake_array[yilanin_neresi].y_coor = snake_array[yilanin_neresi - 1].y_coor;
+				snake_array[yilanin_neresi].x_coor = snake_array[yilanin_neresi - 1].x_coor - 1;
+			}
+			yilanin_neresi++;
+			generateRandomFruitCoor();
+		}
+		
   }
 	
   /* USER CODE END 3 */
@@ -373,14 +427,9 @@ void generateScreen(void)
 	NOKIA_Out(6,1,"**************");
 }
 
-void generateRandomFruit(void)
-{
-	//rand() % (max_number + 1 - minimum_number) + minimum_number
-	fruit_x = rand() % (13 + 1 - 2) + 2;
-	fruit_y = rand() % (5 + 1 - 2) + 2;
-	
+void printRandomFruit(void)
+{	
 	NOKIA_Out(fruit_y,fruit_x,"+");
-	
 }
 
 void startMenu(void)
@@ -400,6 +449,13 @@ void startMenu(void)
 	while(!(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_14) || HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_15) || HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_6) || HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_7)));
 	
 	
+}
+
+void generateRandomFruitCoor(void)
+{
+		//rand() % (max_number + 1 - minimum_number) + minimum_number
+	fruit_x = rand() % (13 + 1 - 2) + 2;
+	fruit_y = rand() % (5 + 1 - 2) + 2;
 }
 /* USER CODE END 4 */
 

@@ -31,6 +31,7 @@ snake97_191201053_191291052\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4x
 snake97_191201053_191291052\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc.h
 snake97_191201053_191291052\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc_ex.h
 snake97_191201053_191291052\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+snake97_191201053_191291052\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 snake97_191201053_191291052\main.o: ../Inc/Nokia_5110.h
 snake97_191201053_191291052\main.o: ../Inc/dwt_delay.h
 snake97_191201053_191291052\main.o: ../Inc/dwt_delay.h
