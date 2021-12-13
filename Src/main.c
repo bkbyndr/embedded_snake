@@ -151,7 +151,36 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+			if((selfCollisionControl()) || (boundaryCollisionControl()))
+			{
+			NOKIA_Clear();
+			sprintf(buffer_skor," %d ",(uint32_t)(yilanin_neresi));
+			uint8_t counter = 0;
+			while(counter < 3)
+			{
+				for(i = 0; i < yilanin_neresi;i++)
+				{
+					NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");
+				}
+				HAL_Delay(750);
+				NOKIA_Clear();
+				HAL_Delay(750);
+				counter++;
+			}
+			
+			NOKIA_Out(3,2,"Oyun Bitti");
+			HAL_Delay(2000);
+			NOKIA_Clear();
+			
+			NOKIA_Out(3,2,"Skor: ");
+			NOKIA_Out(3,8,buffer_skor);
 
+		  NOKIA_Out(5,2,"Sure: ");
+			NOKIA_Out(5,4,buffer_skor);
+
+			HAL_Delay(2000);
+			
+			}
 			generateScreen();
 			printRandomFruit();
 
@@ -514,6 +543,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			if(!diffFlag)
 			{
 				diff = ZOR;
+				yon = YUKARI;
 				diffFlag = 1;
 			}
     }
@@ -523,6 +553,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			if(!diffFlag)
 			{
 				diff = KOLAY;
+				yon = YUKARI;
 				diffFlag = 1;
 			}			
     }
@@ -536,6 +567,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			if(!diffFlag)
 			{
 				diff = ORTA;
+				yon = YUKARI;
 				diffFlag = 1;
 			}				
     }
@@ -552,7 +584,7 @@ void generateScreen(void)
 
 void printRandomFruit(void)
 {	
-	NOKIA_Out(fruit_y,fruit_x,"0");
+	NOKIA_Out(fruit_y,fruit_x,"*");
 }
 
 void startMenu(void)
@@ -585,7 +617,7 @@ uint8_t selfCollisionControl(void)
 {
 	if(yilanin_neresi > 1)
 		{
-		for(i = 0; i < yilanin_neresi; i++)
+		for(i = 1; i < yilanin_neresi; i++)
 		{
 			if((snake_array[i].x_coor == snake_array[0].x_coor) && (snake_array[i].y_coor == snake_array[0].y_coor))
 			{
