@@ -64,6 +64,7 @@ RTC_HandleTypeDef hrtc;
 		uint8_t y_coor;
 	};
 
+	uint16_t RTC_counter = 0;
 	uint8_t yon = YUKARI;
 	uint8_t i;
 	uint8_t fruit_x = 8;
@@ -159,7 +160,7 @@ int main(void)
 			uint8_t counter = 0;
 				
 			HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-			second = sTime.Seconds;
+			second = sTime.Seconds - (2) - (RTC_counter);
 			minutes = sTime.Minutes;
 			hours = sTime.Hours;	
 			sprintf(buffer_sure,"Sure: %d:%d:%d",hours,minutes,second);
@@ -598,7 +599,11 @@ void startMenu(void)
 	NOKIA_Out(4,2,"Zor  Yukari");
 	NOKIA_Out(5,2,"Orta    Sol");
 	
-	while(!(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_14) || HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_15) || HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_6) || HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_7)));
+	while(!(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_14) || HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_15) || HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_6) || HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_7)))
+	{
+		HAL_Delay(1000);
+		RTC_counter++;
+	}
 	
 	
 }
