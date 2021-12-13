@@ -74,13 +74,14 @@ RTC_HandleTypeDef hrtc;
 															// Ayni zamanda
 	struct snake snake_array[50] = {0};
 	struct snake snake_temp[50] = {0};
-	char bufferx_fr[5] = {0};
-	char buffery_fr[5] = {0};
-	char bufferx_sn[5] = {0};
-	char buffery_sn[5] = {0};
 	
 	char buffer_skor[5] = {0};
-	char buffer_sure[5] = {0};
+	char buffer_sure[16] = {0};
+	
+	int second = 0, minutes = 0, hours = 0;
+	
+	RTC_TimeTypeDef sTime;
+  RTC_DateTypeDef sDate;
 	
 	
 /* USER CODE END PV */
@@ -156,6 +157,13 @@ int main(void)
 			NOKIA_Clear();
 			sprintf(buffer_skor," %d ",(uint32_t)(yilanin_neresi));
 			uint8_t counter = 0;
+				
+			HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+			second = sTime.Seconds;
+			minutes = sTime.Minutes;
+			hours = sTime.Hours;	
+			sprintf(buffer_sure,"Sure: %d:%d:%d",hours,minutes,second);
+				
 			while(counter < 3)
 			{
 				for(i = 0; i < yilanin_neresi;i++)
@@ -175,10 +183,10 @@ int main(void)
 			NOKIA_Out(3,2,"Skor: ");
 			NOKIA_Out(3,8,buffer_skor);
 
-		  NOKIA_Out(5,2,"Sure: ");
-			NOKIA_Out(5,4,buffer_skor);
-
+		  NOKIA_Out(5,1,buffer_sure);
 			HAL_Delay(2000);
+			
+			break;
 			
 			}
 			generateScreen();
@@ -325,17 +333,6 @@ int main(void)
 			
 			HAL_Delay(1000 - (300*diff)); 
 			NOKIA_Clear();
-			
-			sprintf(bufferx_fr," %d ",(uint32_t)fruit_x);
-			sprintf(buffery_fr," %d ",(uint32_t)fruit_y);
-			sprintf(bufferx_sn," %d ",(uint32_t)snake_array[0].x_coor);
-			sprintf(buffery_sn," %d ",(uint32_t)snake_array[0].y_coor);
-			NOKIA_Out(3,2,bufferx_fr);
-			NOKIA_Out(3,4,buffery_fr);
-			
-			NOKIA_Out(3,7,bufferx_sn);
-			NOKIA_Out(3,9,buffery_sn);
-			HAL_Delay(1500);
 			
 			if( (snake_array[0].x_coor == fruit_x ) && (snake_array[0].y_coor == fruit_y))
 			{
