@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
+  **********
   * @file           : main.c
   * @brief          : Main program body
-  ******************************************************************************
+  **********
   * @attention
   *
   * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
@@ -14,7 +14,7 @@
   * License. You may obtain a copy of the License at:
   *                        opensource.org/licenses/BSD-3-Clause
   *
-  ******************************************************************************
+  **********
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
@@ -74,6 +74,13 @@ RTC_HandleTypeDef hrtc;
 															// Ayni zamanda
 	struct snake snake_array[50] = {0};
 	struct snake snake_temp[50] = {0};
+	char bufferx_fr[5] = {0};
+	char buffery_fr[5] = {0};
+	char bufferx_sn[5] = {0};
+	char buffery_sn[5] = {0};
+	
+	char buffer_skor[5] = {0};
+	char buffer_sure[5] = {0};
 	
 	
 /* USER CODE END PV */
@@ -129,6 +136,7 @@ int main(void)
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */	
 	NOKIA_Init();
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10,GPIO_PIN_SET);
 	snake_array[0].x_coor = 4;
 	snake_array[0].y_coor = 5;
 	snake_array[0].tail = 1;
@@ -143,112 +151,192 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		generateScreen();
-		printRandomFruit();
 
-		
-		/*
-		TODO: Her seyin basinda burada oyunun bitip bitmrdigi kontrol edilecek
-		*/
-		
-		
-		if(yon == YUKARI)
-		{
-			for(i = 0; i < yilanin_neresi;i++)
-				{
-					if(i == 0)
-						{
-							(snake_array[0].y_coor)-=1;
-						}
-					else if(i != 0)
-					{
-						snake_array[i].x_coor = snake_array[i - 1].x_coor;
-						snake_array[i].y_coor = snake_array[i - 1].y_coor;
-					}
-					NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");
-				}
-		
-		}else if(yon == ASAGI)
-		{
-			for(i = 0; i < yilanin_neresi;i++)
-				{
-					if(i == 0)
-						{
-							(snake_array[0].y_coor)+=1;
-						}
-					else if(i != 0)
-					{
-						snake_array[i].x_coor = snake_array[i - 1].x_coor;
-						snake_array[i].y_coor = snake_array[i - 1].y_coor;
-					}
-					NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");
-				}
+			generateScreen();
+			printRandomFruit();
+
 			
-		}else if(yon == SOL)
-		{
-			for(i = 0; i < yilanin_neresi;i++)
-				{
-					if(i == 0)
-						{
-							(snake_array[0].x_coor)-=1;
-						}
-					else if(i != 0)
-					{
-						snake_array[i].x_coor = snake_array[i - 1].x_coor;
-						snake_array[i].y_coor = snake_array[i - 1].y_coor;
-					}
-					NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");
-				}			
-		}else if(yon == SAG)
-		{
-			for(i = 0; i < yilanin_neresi;i++)
-				{
-					if(i == 0)
-						{
-							(snake_array[0].x_coor)+=1;
-						}
-					else if(i != 0)
-					{
-						snake_array[i].x_coor = snake_array[i - 1].x_coor;
-						snake_array[i].y_coor = snake_array[i - 1].y_coor;
-					}
-					NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");
-				}		
-		}
-		
-		
-		HAL_Delay(1000 - (300*diff)); 
-		NOKIA_Clear();
-		
-		
-		if( (snake_array[0].x_coor == fruit_x )&& (snake_array[0].y_coor == fruit_y))
-		{
+			/*
+			TODO: Her seyin basinda burada oyunun bitip bitmrdigi kontrol edilecek
+			*/
+			
+			
 			if(yon == YUKARI)
 			{
-				snake_array[yilanin_neresi].x_coor = snake_array[yilanin_neresi - 1].x_coor;
-				snake_array[yilanin_neresi].y_coor = snake_array[yilanin_neresi - 1].y_coor + 1;
-			}
-			else if(yon == ASAGI)
+				for(i = 0; i < yilanin_neresi;i++)
+					{
+						if(i == 0)
+							{
+
+								snake_temp[i].x_coor=snake_array[i].x_coor;
+								snake_temp[i].y_coor=snake_array[i].y_coor;
+								
+								
+								(snake_array[0].y_coor)-=1;
+							}
+							
+						else if(i==1){
+								snake_temp[i].x_coor=snake_array[i].x_coor;
+								snake_temp[i].y_coor=snake_array[i].y_coor;
+							
+						 snake_array[i].x_coor=snake_temp[i-1].x_coor;
+						 snake_array[i].y_coor=snake_temp[i-1].y_coor;	
+					
+						}	
+						else if(i>1 && i<yilanin_neresi)
+						{
+							snake_temp[i].x_coor=snake_array[i].x_coor;
+							snake_temp[i].y_coor=snake_array[i].y_coor;
+							
+							snake_array[i].x_coor = snake_temp[i - 1].x_coor;
+							snake_array[i].y_coor = snake_temp[i - 1].y_coor;
+						}
+						NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");
+					}
+			
+			}else if(yon == ASAGI)
 			{
-				snake_array[yilanin_neresi].x_coor = snake_array[yilanin_neresi - 1].x_coor;
-				snake_array[yilanin_neresi].y_coor = snake_array[yilanin_neresi - 1].y_coor - 1;
-			}
-			else if(yon == SOL)
+				for(i = 0; i < yilanin_neresi;i++)
+					{
+					if(i == 0)
+							{
+
+								snake_temp[i].x_coor=snake_array[i].x_coor;
+								snake_temp[i].y_coor=snake_array[i].y_coor;
+								
+								
+								(snake_array[0].y_coor)+=1;
+							}
+							
+						else if(i==1){
+								snake_temp[i].x_coor=snake_array[i].x_coor;
+								snake_temp[i].y_coor=snake_array[i].y_coor;
+							
+						 snake_array[i].x_coor=snake_temp[i-1].x_coor;
+						 snake_array[i].y_coor=snake_temp[i-1].y_coor;	
+					
+						}	
+						else if(i>1 && i<yilanin_neresi)
+						{
+							snake_temp[i].x_coor=snake_array[i].x_coor;
+							snake_temp[i].y_coor=snake_array[i].y_coor;
+							
+							snake_array[i].x_coor = snake_temp[i - 1].x_coor;
+							snake_array[i].y_coor = snake_temp[i - 1].y_coor;
+						}
+						NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");
+					}
+				
+			}else if(yon == SOL)
 			{
-				snake_array[yilanin_neresi].y_coor = snake_array[yilanin_neresi - 1].y_coor;
-				snake_array[yilanin_neresi].x_coor = snake_array[yilanin_neresi - 1].x_coor + 1;
-			}
-			else if(yon == SAG)
+				for(i = 0; i < yilanin_neresi;i++)
+					{
+					if(i == 0)
+							{
+
+								snake_temp[i].x_coor=snake_array[i].x_coor;
+								snake_temp[i].y_coor=snake_array[i].y_coor;
+								
+								
+								(snake_array[0].x_coor)-=1;
+							}
+							
+						else if(i==1){
+								snake_temp[i].x_coor=snake_array[i].x_coor;
+								snake_temp[i].y_coor=snake_array[i].y_coor;
+							
+						 snake_array[i].x_coor=snake_temp[i-1].x_coor;
+						 snake_array[i].y_coor=snake_temp[i-1].y_coor;	
+					
+						}	
+						else if(i>1 && i<yilanin_neresi)
+						{
+							snake_temp[i].x_coor=snake_array[i].x_coor;
+							snake_temp[i].y_coor=snake_array[i].y_coor;
+							
+							snake_array[i].x_coor = snake_temp[i - 1].x_coor;
+							snake_array[i].y_coor = snake_temp[i - 1].y_coor;
+						}
+						NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");
+					}			
+			}else if(yon == SAG)
 			{
-				snake_array[yilanin_neresi].y_coor = snake_array[yilanin_neresi - 1].y_coor;
-				snake_array[yilanin_neresi].x_coor = snake_array[yilanin_neresi - 1].x_coor - 1;
+				for(i = 0; i < yilanin_neresi;i++)
+					{
+						if(i == 0)
+							{
+
+								snake_temp[i].x_coor=snake_array[i].x_coor;
+								snake_temp[i].y_coor=snake_array[i].y_coor;
+								
+								
+								(snake_array[0].x_coor)+=1;
+							}
+							
+						else if(i==1){
+								snake_temp[i].x_coor=snake_array[i].x_coor;
+								snake_temp[i].y_coor=snake_array[i].y_coor;
+							
+						 snake_array[i].x_coor=snake_temp[i-1].x_coor;
+						 snake_array[i].y_coor=snake_temp[i-1].y_coor;	
+					
+						}	
+						else if(i>1 && i<yilanin_neresi)
+						{
+							snake_temp[i].x_coor=snake_array[i].x_coor;
+							snake_temp[i].y_coor=snake_array[i].y_coor;
+							
+							snake_array[i].x_coor = snake_temp[i - 1].x_coor;
+							snake_array[i].y_coor = snake_temp[i - 1].y_coor;
+						}
+						NOKIA_Out(snake_array[i].y_coor, snake_array[i].x_coor,"0");
+					}		
 			}
-			yilanin_neresi++;
-			generateRandomFruitCoor();
-		}
+			
+			
+			HAL_Delay(1000 - (300*diff)); 
+			NOKIA_Clear();
+			
+			sprintf(bufferx_fr," %d ",(uint32_t)fruit_x);
+			sprintf(buffery_fr," %d ",(uint32_t)fruit_y);
+			sprintf(bufferx_sn," %d ",(uint32_t)snake_array[0].x_coor);
+			sprintf(buffery_sn," %d ",(uint32_t)snake_array[0].y_coor);
+			NOKIA_Out(3,2,bufferx_fr);
+			NOKIA_Out(3,4,buffery_fr);
+			
+			NOKIA_Out(3,7,bufferx_sn);
+			NOKIA_Out(3,9,buffery_sn);
+			HAL_Delay(1500);
+			
+			if( (snake_array[0].x_coor == fruit_x ) && (snake_array[0].y_coor == fruit_y))
+			{
+							
+				if(yon == YUKARI)
+				{
+					snake_array[yilanin_neresi].x_coor = snake_array[yilanin_neresi - 1].x_coor;
+					snake_array[yilanin_neresi].y_coor = snake_array[yilanin_neresi - 1].y_coor + 1;
+				}
+				else if(yon == ASAGI)
+				{
+					snake_array[yilanin_neresi].x_coor = snake_array[yilanin_neresi - 1].x_coor;
+					snake_array[yilanin_neresi].y_coor = snake_array[yilanin_neresi - 1].y_coor - 1;
+				}
+				else if(yon == SOL)
+				{
+					snake_array[yilanin_neresi].y_coor = snake_array[yilanin_neresi - 1].y_coor;
+					snake_array[yilanin_neresi].x_coor = snake_array[yilanin_neresi - 1].x_coor + 1;
+				}
+				else if(yon == SAG)
+				{
+					snake_array[yilanin_neresi].y_coor = snake_array[yilanin_neresi - 1].y_coor;
+					snake_array[yilanin_neresi].x_coor = snake_array[yilanin_neresi - 1].x_coor - 1;
+				}
+				yilanin_neresi++;
+				generateRandomFruitCoor();
+			}
+			
 		
-  }
-	
+	}	
   /* USER CODE END 3 */
 }
 
@@ -464,7 +552,7 @@ void generateScreen(void)
 
 void printRandomFruit(void)
 {	
-	NOKIA_Out(fruit_y,fruit_x,"+");
+	NOKIA_Out(fruit_y,fruit_x,"0");
 }
 
 void startMenu(void)
@@ -495,13 +583,16 @@ void generateRandomFruitCoor(void)
 
 uint8_t selfCollisionControl(void)
 {
-	for(i = 0; i < yilanin_neresi; i++)
-	{
-		if((snake_array[i].x_coor == snake_array[0].x_coor) && (snake_array[i].y_coor == snake_array[0].y_coor))
+	if(yilanin_neresi > 1)
 		{
-			return 1;
-		}
+		for(i = 0; i < yilanin_neresi; i++)
+		{
+			if((snake_array[i].x_coor == snake_array[0].x_coor) && (snake_array[i].y_coor == snake_array[0].y_coor))
+			{
+				return 1;
+			}
 
+		}
 	}
 			return 0;
 }
@@ -549,4 +640,4 @@ void assert_failed(uint8_t *file, uint32_t line)
 }
 #endif /* USE_FULL_ASSERT */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+/*** (C) COPYRIGHT STMicroelectronics **END OF FILE*/
